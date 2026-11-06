@@ -19,12 +19,12 @@
   </script>
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <!-- jsPDF -->
+  <!-- jsPDF Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col font-sans">
 
-  <!-- Navbar -->
+  <!-- Navbar (Clean & Modern) -->
   <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('generator')">
@@ -37,20 +37,13 @@
         </div>
       </div>
 
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
-        <button onclick="switchTab('generator')" class="hover:text-blue-600 transition">Generator</button>
-        <button onclick="switchTab('about')" class="hover:text-blue-600 transition">About Us</button>
-        <button onclick="switchTab('privacy')" class="hover:text-blue-600 transition">Privacy Policy</button>
-        <button onclick="switchTab('terms')" class="hover:text-blue-600 transition">Terms of Use</button>
-      </nav>
-
+      <!-- Theme Toggle & New Doc Button -->
       <div class="flex items-center gap-3">
-        <!-- Theme Toggle -->
         <button id="themeToggle" class="h-10 w-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:scale-105 transition">
           <i class="fa-solid fa-moon dark:hidden text-slate-700"></i>
           <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
         </button>
-        <button onclick="switchTab('generator')" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition">
+        <button id="newDocBtn" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition">
           <i class="fa-solid fa-plus"></i> New Doc
         </button>
       </div>
@@ -92,73 +85,99 @@
             </div>
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Due Date</label>
-              <input type="date" id="inpDate" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
+              <!-- Calendar Date Input Added -->
+              <input type="date" id="inpDate" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition cursor-pointer" />
             </div>
           </div>
         </div>
 
         <button id="downloadPdfBtn" class="mt-6 w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 transition">
-          <i class="fa-solid fa-download"></i> Download Official PDF
+          <i class="fa-solid fa-file-pdf"></i> Download Official PDF
         </button>
       </div>
 
       <!-- Right Preview -->
       <div class="lg:col-span-7 bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-center min-h-[600px] shadow-inner">
         <div id="previewCard" class="bg-white text-slate-900 w-full max-w-xl rounded-2xl shadow-2xl p-8 transition-all">
-          <!-- Dynamic Content Rendered Here -->
           <div id="previewContent"></div>
         </div>
       </div>
     </div>
 
-    <!-- ABOUT US VIEW -->
-    <div id="view-about" class="hidden max-w-3xl mx-auto space-y-6">
-      <h1 class="text-3xl font-black">About Invoify</h1>
-      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Invoify is a high-performance, client-side digital utility crafted under Ahmad Builds. Our mission is to provide independent creators, freelancers, and software developers with seamless, privacy-first tools that eliminate administrative overhead without requiring server databases.</p>
-    </div>
-
-    <!-- PRIVACY POLICY VIEW -->
-    <div id="view-privacy" class="hidden max-w-3xl mx-auto space-y-6">
-      <h1 class="text-3xl font-black">Privacy Policy</h1>
-      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Your privacy is our priority. Invoify operates entirely inside your web browser. None of the data, client names, or financial amounts you enter are ever uploaded to any server or saved externally.</p>
-    </div>
-
-    <!-- TERMS OF USE VIEW -->
-    <div id="view-terms" class="hidden max-w-3xl mx-auto space-y-6">
-      <h1 class="text-3xl font-black">Terms of Use</h1>
-      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">By using Invoify, you agree that templates provided are for general administrative guidance and do not constitute formal legal counsel. Always review contracts and invoices with local legal standards before execution.</p>
-    </div>
-
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-slate-200 dark:border-slate-800 py-6 mt-12 text-center text-xs text-slate-500">
-    <p>© 2026 Ahmad Builds. All rights reserved.</p>
+  <!-- Professional Footer with Links at Bottom -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 py-8 mt-12 bg-white/50 dark:bg-slate-900/50">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>© 2026 Ahmad Builds. All rights reserved.</p>
+      <div class="flex items-center gap-6 font-medium">
+        <button onclick="openModal('about')" class="hover:text-blue-600 transition">About Us</button>
+        <button onclick="openModal('privacy')" class="hover:text-blue-600 transition">Privacy Policy</button>
+        <button onclick="openModal('terms')" class="hover:text-blue-600 transition">Terms of Use</button>
+      </div>
+    </div>
   </footer>
+
+  <!-- Info Modal for About/Privacy/Terms -->
+  <div id="infoModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-100 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="modalBody" class="space-y-4 text-sm text-slate-600 dark:text-slate-300"></div>
+    </div>
+  </div>
 
   <!-- Script logic -->
   <script>
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+
+    // Theme Toggle
+    document.getElementById('themeToggle').addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
     });
 
-    function switchTab(tab) {
-      ['generator', 'about', 'privacy', 'terms'].forEach(t => {
-        document.getElementById(`view-${t}`).classList.add('hidden');
-      });
-      document.getElementById(`view-${tab}`).classList.remove('hidden');
+    // New Document Reset Button
+    document.getElementById('newDocBtn').addEventListener('click', () => {
+      document.getElementById('inpFreelancer').value = 'Ahmad';
+      document.getElementById('inpClient').value = 'Global Tech Corp';
+      document.getElementById('inpScope').value = 'Full-stack web application development and UI/UX optimization.';
+      document.getElementById('inpAmount').value = '750';
+      document.getElementById('inpDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('templateType').value = 'invoice';
+      updatePreview();
+    });
+
+    // Modal Control
+    function openModal(type) {
+      const modal = document.getElementById('infoModal');
+      const body = document.getElementById('modalBody');
+      modal.classList.remove('hidden');
+
+      if (type === 'about') {
+        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">About Invoify</h3><p>Invoify is a high-performance, client-side digital utility crafted under Ahmad Builds. Our mission is to provide independent creators, freelancers, and software developers with seamless, privacy-first tools.</p>`;
+      } else if (type === 'privacy') {
+        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Privacy Policy</h3><p>Your privacy is our priority. Invoify operates entirely inside your browser. None of the data or financial amounts you enter are uploaded to any external server.</p>`;
+      } else if (type === 'terms') {
+        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Terms of Use</h3><p>Templates provided are for general guidance and do not constitute formal legal counsel. Always review contracts and invoices with local standards before execution.</p>`;
+      }
     }
 
-    const fields = ['inpFreelancer', 'inpClient', 'inpScope', 'inpAmount', 'inpDate', 'templateType'];
-    fields.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+    function closeModal() {
+      document.getElementById('infoModal').classList.add('hidden');
+    }
+
+    // Input listeners for real-time preview
+    ['inpFreelancer', 'inpClient', 'inpScope', 'inpAmount', 'inpDate', 'templateType'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+    });
 
     function updatePreview() {
       const f = document.getElementById('inpFreelancer').value || 'Ahmad';
       const c = document.getElementById('inpClient').value || 'Client';
       const s = document.getElementById('inpScope').value || '';
       const amt = document.getElementById('inpAmount').value || '0';
-      const dt = document.getElementById('inpDate').value || '2026-12-31';
+      const dt = document.getElementById('inpDate').value || '';
       const type = document.getElementById('templateType').value;
 
       const container = document.getElementById('previewContent');
@@ -170,7 +189,7 @@
               <h2 class="text-2xl font-black mt-1">INVOICE</h2>
             </div>
             <div class="text-right text-xs text-slate-500">
-              <p><strong>Date:</strong> ${dt}</p>
+              <p><strong>Due Date:</strong> ${dt}</p>
               <p><strong>Invoice #:</strong> INV-001</p>
             </div>
           </div>
@@ -205,7 +224,38 @@
       }
     }
 
-    // Default Date set
+    // PDF Download Logic using jsPDF
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+      const doc = new jsPDF();
+      const f = document.getElementById('inpFreelancer').value || 'Ahmad';
+      const c = document.getElementById('inpClient').value || 'Client';
+      const s = document.getElementById('inpScope').value || '';
+      const amt = document.getElementById('inpAmount').value || '0';
+      const dt = document.getElementById('inpDate').value || '';
+      const type = document.getElementById('templateType').value;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      doc.text(type === 'invoice' ? "COMMERCIAL INVOICE" : "SERVICE AGREEMENT", 20, 25);
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`From: ${f}`, 20, 40);
+      doc.text(`Client: ${c}`, 20, 48);
+      doc.text(`Due Date: ${dt}`, 20, 56);
+
+      doc.text("Project Scope:", 20, 70);
+      doc.setFont("helvetica", "italic");
+      doc.text(s, 20, 78, { maxWidth: 170 });
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text(`Total Amount: $${amt} USD`, 20, 110);
+
+      doc.save(`${type}-document.pdf`);
+    });
+
+    // Default Date Set
     document.getElementById('inpDate').value = new Date().toISOString().split('T')[0];
     updatePreview();
   </script>
