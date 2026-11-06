@@ -24,7 +24,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col font-sans">
 
-  <!-- Navbar (Clean & Modern) -->
+  <!-- Navbar -->
   <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('generator')">
@@ -37,7 +37,6 @@
         </div>
       </div>
 
-      <!-- Theme Toggle & New Doc Button -->
       <div class="flex items-center gap-3">
         <button id="themeToggle" class="h-10 w-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:scale-105 transition">
           <i class="fa-solid fa-moon dark:hidden text-slate-700"></i>
@@ -52,9 +51,8 @@
 
   <!-- Main Container -->
   <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-
-    <!-- GENERATOR VIEW -->
     <div id="view-generator" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
       <!-- Left Inputs -->
       <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
         <div class="flex items-center justify-between mb-6">
@@ -85,7 +83,6 @@
             </div>
             <div>
               <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Due Date</label>
-              <!-- Calendar Date Input Added -->
               <input type="date" id="inpDate" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition cursor-pointer" />
             </div>
           </div>
@@ -96,17 +93,16 @@
         </button>
       </div>
 
-      <!-- Right Preview -->
+      <!-- Right Preview (Stylish UI Card) -->
       <div class="lg:col-span-7 bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-center min-h-[600px] shadow-inner">
-        <div id="previewCard" class="bg-white text-slate-900 w-full max-w-xl rounded-2xl shadow-2xl p-8 transition-all">
+        <div id="previewCard" class="bg-white text-slate-900 w-full max-w-xl rounded-2xl shadow-2xl p-8 border border-slate-100 transition-all">
           <div id="previewContent"></div>
         </div>
       </div>
     </div>
-
   </main>
 
-  <!-- Professional Footer with Links at Bottom -->
+  <!-- Footer -->
   <footer class="border-t border-slate-200 dark:border-slate-800 py-8 mt-12 bg-white/50 dark:bg-slate-900/50">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
       <p>© 2026 Ahmad Builds. All rights reserved.</p>
@@ -118,7 +114,7 @@
     </div>
   </footer>
 
-  <!-- Info Modal for About/Privacy/Terms -->
+  <!-- Modal -->
   <div id="infoModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
       <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-100 text-lg">
@@ -132,12 +128,10 @@
   <script>
     const { jsPDF } = window.jspdf;
 
-    // Theme Toggle
     document.getElementById('themeToggle').addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
     });
 
-    // New Document Reset Button
     document.getElementById('newDocBtn').addEventListener('click', () => {
       document.getElementById('inpFreelancer').value = 'Ahmad';
       document.getElementById('inpClient').value = 'Global Tech Corp';
@@ -148,18 +142,17 @@
       updatePreview();
     });
 
-    // Modal Control
     function openModal(type) {
       const modal = document.getElementById('infoModal');
       const body = document.getElementById('modalBody');
       modal.classList.remove('hidden');
 
       if (type === 'about') {
-        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">About Invoify</h3><p>Invoify is a high-performance, client-side digital utility crafted under Ahmad Builds. Our mission is to provide independent creators, freelancers, and software developers with seamless, privacy-first tools.</p>`;
+        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">About Invoify</h3><p>Invoify is a high-performance, client-side digital utility crafted under Ahmad Builds.</p>`;
       } else if (type === 'privacy') {
-        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Privacy Policy</h3><p>Your privacy is our priority. Invoify operates entirely inside your browser. None of the data or financial amounts you enter are uploaded to any external server.</p>`;
+        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Privacy Policy</h3><p>Your privacy is our priority. Invoify operates entirely inside your browser.</p>`;
       } else if (type === 'terms') {
-        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Terms of Use</h3><p>Templates provided are for general guidance and do not constitute formal legal counsel. Always review contracts and invoices with local standards before execution.</p>`;
+        body.innerHTML = `<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Terms of Use</h3><p>Templates provided are for general guidance and do not constitute formal legal counsel.</p>`;
       }
     }
 
@@ -167,7 +160,6 @@
       document.getElementById('infoModal').classList.add('hidden');
     }
 
-    // Input listeners for real-time preview
     ['inpFreelancer', 'inpClient', 'inpScope', 'inpAmount', 'inpDate', 'templateType'].forEach(id => {
       document.getElementById(id).addEventListener('input', updatePreview);
     });
@@ -183,50 +175,51 @@
       const container = document.getElementById('previewContent');
       if (type === 'invoice') {
         container.innerHTML = `
-          <div class="flex justify-between items-start border-b pb-6 mb-6">
+          <div class="flex justify-between items-start border-b-2 border-blue-600 pb-6 mb-6">
             <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-blue-600">Commercial Invoice</span>
-              <h2 class="text-2xl font-black mt-1">INVOICE</h2>
+              <span class="text-xs font-extrabold uppercase tracking-widest text-blue-600">AHMAD BUILDS</span>
+              <h2 class="text-3xl font-black mt-1 text-slate-900">INVOICE</h2>
             </div>
             <div class="text-right text-xs text-slate-500">
               <p><strong>Due Date:</strong> ${dt}</p>
               <p><strong>Invoice #:</strong> INV-001</p>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
-            <div><p class="text-xs font-bold text-slate-400">FROM</p><p class="font-bold">${f}</p></div>
-            <div><p class="text-xs font-bold text-slate-400">BILLED TO</p><p class="font-bold">${c}</p></div>
+          <div class="grid grid-cols-2 gap-4 mb-6 text-sm bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <div><p class="text-xs font-bold text-slate-400">FROM</p><p class="font-bold text-slate-800">${f}</p></div>
+            <div><p class="text-xs font-bold text-slate-400">BILLED TO</p><p class="font-bold text-slate-800">${c}</p></div>
           </div>
-          <div class="border rounded-xl p-4 mb-6 bg-slate-50 text-sm">
-            <p class="font-semibold">${s}</p>
+          <div class="border rounded-xl p-4 mb-6 bg-white shadow-sm text-sm border-slate-200">
+            <p class="text-xs font-bold text-slate-400 mb-1">PROJECT SCOPE</p>
+            <p class="font-medium text-slate-700">${s}</p>
           </div>
-          <div class="flex justify-between items-center text-lg font-black border-t pt-4">
-            <span>Total Due:</span>
-            <span class="text-blue-600">$${amt} USD</span>
+          <div class="flex justify-between items-center text-lg font-black border-t-2 border-slate-100 pt-4">
+            <span class="text-slate-600">Total Due:</span>
+            <span class="text-blue-600 text-2xl">$${amt} USD</span>
           </div>
         `;
       } else {
         container.innerHTML = `
-          <div class="border-b pb-4 mb-4">
-            <span class="text-xs font-bold uppercase tracking-widest text-indigo-600">Legal Agreement</span>
-            <h2 class="text-xl font-black mt-1">SERVICE CONTRACT</h2>
+          <div class="border-b-2 border-indigo-600 pb-4 mb-4">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-indigo-600">AHMAD BUILDS</span>
+            <h2 class="text-2xl font-black mt-1 text-slate-900">SERVICE AGREEMENT</h2>
           </div>
-          <div class="space-y-4 text-xs text-slate-700 leading-relaxed">
-            <p>This agreement is made between <strong>${f}</strong> (Provider) and <strong>${c}</strong> (Client).</p>
+          <div class="space-y-4 text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <p>This professional agreement is executed between <strong>${f}</strong> (Provider) and <strong>${c}</strong> (Client).</p>
             <p><strong>Scope of Work:</strong> ${s}</p>
-            <p><strong>Compensation:</strong> Total project fee is fixed at <strong>$${amt} USD</strong>, payable by ${dt}.</p>
+            <p><strong>Compensation:</strong> Total agreed project fee is fixed at <strong>$${amt} USD</strong>, payable by ${dt}.</p>
           </div>
-          <div class="grid grid-cols-2 gap-4 mt-8 pt-4 border-t text-xs font-bold">
-            <div><p>${f}</p><p class="text-[10px] text-slate-400 font-normal">Provider Signature</p></div>
-            <div><p>${c}</p><p class="text-[10px] text-slate-400 font-normal">Client Signature</p></div>
+          <div class="grid grid-cols-2 gap-4 mt-8 pt-4 border-t-2 border-slate-100 text-xs font-bold">
+            <div><p class="text-slate-800">${f}</p><p class="text-[10px] text-slate-400 font-normal">Provider Signature</p></div>
+            <div><p class="text-slate-800">${c}</p><p class="text-[10px] text-slate-400 font-normal">Client Signature</p></div>
           </div>
         `;
       }
     }
 
-    // PDF Download Logic using jsPDF
+    // Professional Stylish PDF Generation using jsPDF
     document.getElementById('downloadPdfBtn').addEventListener('click', () => {
-      const doc = new jsPDF();
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
       const f = document.getElementById('inpFreelancer').value || 'Ahmad';
       const c = document.getElementById('inpClient').value || 'Client';
       const s = document.getElementById('inpScope').value || '';
@@ -234,28 +227,82 @@
       const dt = document.getElementById('inpDate').value || '';
       const type = document.getElementById('templateType').value;
 
+      // Decorative Top Header Bar
+      doc.setFillColor(37, 99, 235); // Blue Accent
+      doc.rect(0, 0, 210, 15, 'F');
+
+      // Brand Title
       doc.setFont("helvetica", "bold");
       doc.setFontSize(22);
-      doc.text(type === 'invoice' ? "COMMERCIAL INVOICE" : "SERVICE AGREEMENT", 20, 25);
+      doc.setTextColor(30, 41, 59);
+      doc.text(type === 'invoice' ? "COMMERCIAL INVOICE" : "SERVICE AGREEMENT", 20, 32);
 
       doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(`From: ${f}`, 20, 40);
-      doc.text(`Client: ${c}`, 20, 48);
-      doc.text(`Due Date: ${dt}`, 20, 56);
+      doc.setTextColor(100, 116, 139);
+      doc.text("AHMAD BUILDS DIGITAL ASSET", 20, 24);
 
-      doc.text("Project Scope:", 20, 70);
-      doc.setFont("helvetica", "italic");
-      doc.text(s, 20, 78, { maxWidth: 170 });
+      // Thin Divider Line
+      doc.setDrawColor(226, 232, 240);
+      doc.setLineWidth(0.5);
+      doc.line(20, 40, 190, 40);
+
+      // From / Client Section Box
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(20, 45, 170, 25, 3, 3, 'F');
+      
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
+      doc.text("FROM:", 25, 53);
+      doc.text("BILLED TO:", 110, 53);
 
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text(`Total Amount: $${amt} USD`, 20, 110);
+      doc.setFontSize(11);
+      doc.setTextColor(30, 41, 59);
+      doc.text(f, 25, 61);
+      doc.text(c, 110, 61);
 
-      doc.save(`${type}-document.pdf`);
+      // Due Date
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text(`Due Date: ${dt}`, 145, 32, { align: 'right' });
+
+      // Project Scope Box
+      doc.setFillColor(255, 255, 255);
+      doc.setDrawColor(226, 232, 240);
+      doc.roundedRect(20, 78, 170, 35, 3, 3, 'FD');
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
+      doc.text("PROJECT SCOPE & DETAILS:", 25, 87);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(51, 65, 85);
+      doc.text(s, 25, 96, { maxWidth: 160 });
+
+      // Total Amount Section
+      doc.setDrawColor(203, 213, 225);
+      doc.line(20, 125, 190, 125);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(100, 116, 139);
+      doc.text("Total Amount Due:", 20, 138);
+
+      doc.setFontSize(20);
+      doc.setTextColor(37, 99, 235);
+      doc.text(`$${amt} USD`, 190, 138, { align: 'right' });
+
+      // Footer note inside PDF
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184);
+      doc.text("Generated securely via Ahmad Builds Toolkit. Thank you for your business!", 105, 275, { align: 'center' });
+
+      doc.save(`${type}-ahmad-builds.pdf`);
     });
 
-    // Default Date Set
     document.getElementById('inpDate').value = new Date().toISOString().split('T')[0];
     updatePreview();
   </script>
