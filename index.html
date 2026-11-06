@@ -1,107 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkedIn Hook & Format Optimizer</title>
-    <script src="https://jsdelivr.net"></script>
-    <link rel="stylesheet" href="https://cloudflare.com">
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col items-center p-6">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020617" />
+  <title>One-Click Freelance Contract & Invoice Generator</title>
 
+  <!-- Tailwind CSS v3 Play CDN: convenient for a zero-build, single-file demo. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          boxShadow: { glow: '0 0 35px rgba(59,130,246,.15)' }
+        }
+      }
+    };
+  </script>
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <!-- jsPDF: creates the PDF locally in the browser; no backend/API required. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root { color-scheme: dark; --accent: #3b82f6; }
+    * { box-sizing: border-box; }
+    body { background: #020617; }
+    .field {
+      width: 100%; border: 1px solid #334155; background: #0f172a;
+      color: #e2e8f0; border-radius: 12px; padding: 12px 14px;
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+    .field::placeholder { color: #64748b; }
+    .paper { color: #1e293b; background: #fff; }
+    .paper-muted { color: #64748b; }
+    .accent-bg { background: var(--accent); }
+    .accent-text { color: var(--accent); }
+    .accent-border { border-color: var(--accent); }
+    .preview-scroll { scrollbar-width: thin; scrollbar-color: #475569 #0f172a; }
+    @media print {
+      body { background: white !important; }
+      .no-print { display: none !important; }
+      #preview { box-shadow: none !important; margin: 0 !important; }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen font-sans text-slate-100 antialiased">
+  <div class="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
     <!-- Header -->
-    <header class="text-center my-8">
-        <h1 class="text-4xl font-extrabold text-blue-500 mb-2">🚀 LinkedIn Hook & Format Optimizer</h1>
-        <p class="text-slate-400 text-lg">Format your boring text into high-converting LinkedIn posts instantly!</p>
+    <header class="mb-7 flex flex-col gap-4 border-b border-slate-800 pb-6 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-3">
+        <div class="grid h-11 w-11 place-items-center rounded-2xl accent-bg text-white shadow-glow">
+          <i class="fa-solid fa-file-signature text-lg"></i>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[.22em] text-slate-500">Freelance toolkit</p>
+          <h1 class="text-xl font-bold tracking-tight sm:text-2xl">Contract <span class="text-slate-500">&</span> Invoice Generator</h1>
+        </div>
+      </div>
+
+      <div class="no-print flex flex-wrap items-center gap-2">
+        <label for="accentPicker" class="mr-1 text-xs text-slate-400">Accent</label>
+        <select id="accentPicker" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 outline-none">
+          <option value="#3b82f6">Blue</option>
+          <option value="#8b5cf6">Violet</option>
+          <option value="#06b6d4">Cyan</option>
+          <option value="#10b981">Emerald</option>
+          <option value="#f59e0b">Amber</option>
+        </select>
+        <button id="resetBtn" class="rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800">
+          <i class="fa-solid fa-rotate-left mr-2"></i>Reset
+        </button>
+      </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-800 backdrop-blur-md">
-        
-        <!-- Input Section -->
-        <div class="flex flex-col gap-4">
-            <label class="font-semibold text-slate-300 text-lg flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square text-blue-400"></i> Paste Raw Text Here:
-            </label>
-            <textarea id="inputText" class="w-full h-80 bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:outline-none focus:border-blue-500 resize-none" placeholder="Write or paste your regular post content here..."></textarea>
-            
-            <button onclick="optimizePost()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-600/20">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Optimize & Format
-            </button>
+    <main class="grid items-start gap-6 xl:grid-cols-[minmax(340px,0.82fr)_minmax(540px,1.18fr)]">
+      <!-- LEFT: INPUT PANEL -->
+      <section class="no-print rounded-3xl border border-slate-800 bg-slate-900/90 p-5 shadow-2xl sm:p-6">
+        <div class="mb-6 flex items-start justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold">Document details</h2>
+            <p class="mt-1 text-sm text-slate-400">Enter your project information. Preview updates instantly.</p>
+          </div>
+          <span class="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-xs text-slate-400">Step 1 of 1</span>
         </div>
 
-        <!-- Output Section -->
-        <div class="flex flex-col gap-4 relative">
-            <div class="flex justify-between items-center">
-                <label class="font-semibold text-slate-300 text-lg flex items-center gap-2">
-                    <i class="fa-solid fa-eye text-green-400"></i> LinkedIn Preview:
-                </label>
-                <!-- Quick Floating Copy Button -->
-                <button onclick="copyToClipboard()" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition duration-150 active:scale-95 cursor-pointer">
-                    <i class="fa-solid fa-copy"></i> <span id="btnText">Copy</span>
-                </button>
+        <!-- Document type selector -->
+        <div class="mb-6">
+          <label for="template" class="mb-2 block text-sm font-semibold text-slate-300">Choose a template</label>
+          <div class="relative">
+            <i class="fa-solid fa-layer-group pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+            <select id="template" class="field appearance-none pl-11 pr-10">
+              <option value="invoice">Invoice Style</option>
+              <option value="contract">Simple Freelance Agreement Contract</option>
+            </select>
+            <i class="fa-solid fa-chevron-down pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500"></i>
+          </div>
+        </div>
+
+        <div class="mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-slate-500">
+          <span class="h-px flex-1 bg-slate-800"></span>People & project<span class="h-px flex-1 bg-slate-800"></span>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label for="freelancer" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-regular fa-user mr-2 accent-text"></i>Freelancer name</label>
+            <input id="freelancer" class="field" type="text" placeholder="e.g. Alex Morgan" value="Alex Morgan" />
+          </div>
+          <div>
+            <label for="client" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-solid fa-building-user mr-2 accent-text"></i>Client name</label>
+            <input id="client" class="field" type="text" placeholder="e.g. Bright Studio" value="Bright Studio" />
+          </div>
+          <div>
+            <label for="scope" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-solid fa-list-check mr-2 accent-text"></i>Project scope / description</label>
+            <textarea id="scope" rows="4" class="field resize-y" placeholder="Describe the work, deliverables, and any important details...">Website landing page design and responsive front-end implementation, including one revision round.</textarea>
+            <p class="mt-1.5 text-xs text-slate-500">Keep the description clear so both parties understand the work.</p>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="amount" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-solid fa-dollar-sign mr-2 accent-text"></i>Total amount (USD)</label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                <input id="amount" class="field pl-8" type="number" min="0" step="0.01" placeholder="500" value="500" />
+              </div>
             </div>
-            
-            <div id="outputText" class="w-full h-80 bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 overflow-y-auto whitespace-pre-wrap select-all cursor-pointer group" placeholder="Your optimized text will appear here...">Your optimized post will appear here...</div>
-            
-            <button onclick="copyToClipboard()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer border border-slate-700">
-                <i class="fa-solid fa-copy"></i> Copy Optimized Post
-            </button>
+            <div>
+              <label for="dueDate" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-regular fa-calendar mr-2 accent-text"></i>Due date</label>
+              <input id="dueDate" class="field" type="date" />
+            </div>
+          </div>
         </div>
 
-    </main>
-
-    <!-- Logic Script -->
-    <script>
-        function optimizePost() {
-            let text = document.getElementById('inputText').value;
-            if(!text.trim()) {
-                alert("Yaar, pehlay kuch text toh dalo!");
-                return;
-            }
-
-            let lines = text.split('\n');
-            let optimizedLines = [];
-
-            // Add an AI-style powerful attention-grabbing hook if not present
-            let firstLine = lines[0].trim() || "Amazing insight today";
-            optimizedLines.push("🔥 " + firstLine.toUpperCase());
-            optimizedLines.push("\n↳ Here is why this matters to you:\n");
-
-            for(let i = 1; i < lines.length; i++) {
-                let line = lines[i].trim();
-                if(line.length > 0) {
-                    if(!line.startsWith('•') && !line.startsWith('-')) {
-                        optimizedLines.push("💎 " + line);
-                    } else {
-                        optimizedLines.push(line);
-                    }
-                }
-            }
-
-            optimizedLines.push("\n🎯 Agree? Let me know in the comments below!\n");
-            optimizedLines.push("#freelancing #saas #productivity #growth");
-
-            document.getElementById('outputText').innerText = optimizedLines.join('\n');
-        }
-
-        function copyToClipboard() {
-            let outputText = document.getElementById('outputText').innerText;
-            if(outputText === "Your optimized post will appear here...") {
-                alert("Pehlay optimize kar lo yaar!");
-                return;
-            }
-            
-            navigator.clipboard.writeText(outputText);
-            
-            // Visual feedback on the top button
-            let btnText = document.getElementById('btnText');
-            btnText.innerText = "Copied!";
-            setTimeout(() => {
-                btnText.innerText = "Copy";
-            }, 2000);
-        }
-    </script>
-
-</body>
-</html>
+        <div class="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex gap-3">
+            <i class="fa-solid fa-shield-halved mt-0.5 accent-text"></i>
+            <div>
+              <p class="text-sm font-semibold text-slate-200">Your data stays in this browser</p>
+              <p class="mt-1 text-xs leading-5 text-slate-500">This demo does not send form details to a server. Review the generated document before sharing or signing it.</p>
