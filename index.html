@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Hook & Format Optimizer</title>
+    <script src="https://jsdelivr.net"></script>
+    <link rel="stylesheet" href="https://cloudflare.com">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col items-center p-6">
+
+    <!-- Header -->
+    <header class="text-center my-8">
+        <h1 class="text-4xl font-extrabold text-blue-500 mb-2">🚀 LinkedIn Hook & Format Optimizer</h1>
+        <p class="text-slate-400 text-lg">Format your boring text into high-converting LinkedIn posts instantly!</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-800 backdrop-blur-md">
+        
+        <!-- Input Section -->
+        <div class="flex flex-col gap-4">
+            <label class="font-semibold text-slate-300 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-blue-400"></i> Paste Raw Text Here:
+            </label>
+            <textarea id="inputText" class="w-full h-80 bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:outline-none focus:border-blue-500 resize-none" placeholder="Write or paste your regular post content here..."></textarea>
+            
+            <button onclick="optimizePost()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-600/20">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Optimize & Format
+            </button>
+        </div>
+
+        <!-- Output Section -->
+        <div class="flex flex-col gap-4 relative">
+            <div class="flex justify-between items-center">
+                <label class="font-semibold text-slate-300 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-eye text-green-400"></i> LinkedIn Preview:
+                </label>
+                <!-- Quick Floating Copy Button -->
+                <button onclick="copyToClipboard()" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition duration-150 active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-copy"></i> <span id="btnText">Copy</span>
+                </button>
+            </div>
+            
+            <div id="outputText" class="w-full h-80 bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 overflow-y-auto whitespace-pre-wrap select-all cursor-pointer group" placeholder="Your optimized text will appear here...">Your optimized post will appear here...</div>
+            
+            <button onclick="copyToClipboard()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer border border-slate-700">
+                <i class="fa-solid fa-copy"></i> Copy Optimized Post
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Logic Script -->
+    <script>
+        function optimizePost() {
+            let text = document.getElementById('inputText').value;
+            if(!text.trim()) {
+                alert("Yaar, pehlay kuch text toh dalo!");
+                return;
+            }
+
+            let lines = text.split('\n');
+            let optimizedLines = [];
+
+            // Add an AI-style powerful attention-grabbing hook if not present
+            let firstLine = lines[0].trim() || "Amazing insight today";
+            optimizedLines.push("🔥 " + firstLine.toUpperCase());
+            optimizedLines.push("\n↳ Here is why this matters to you:\n");
+
+            for(let i = 1; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if(line.length > 0) {
+                    if(!line.startsWith('•') && !line.startsWith('-')) {
+                        optimizedLines.push("💎 " + line);
+                    } else {
+                        optimizedLines.push(line);
+                    }
+                }
+            }
+
+            optimizedLines.push("\n🎯 Agree? Let me know in the comments below!\n");
+            optimizedLines.push("#freelancing #saas #productivity #growth");
+
+            document.getElementById('outputText').innerText = optimizedLines.join('\n');
+        }
+
+        function copyToClipboard() {
+            let outputText = document.getElementById('outputText').innerText;
+            if(outputText === "Your optimized post will appear here...") {
+                alert("Pehlay optimize kar lo yaar!");
+                return;
+            }
+            
+            navigator.clipboard.writeText(outputText);
+            
+            // Visual feedback on the top button
+            let btnText = document.getElementById('btnText');
+            btnText.innerText = "Copied!";
+            setTimeout(() => {
+                btnText.innerText = "Copy";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
