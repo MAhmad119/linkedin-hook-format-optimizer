@@ -1,144 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#020617" />
-  <title>One-Click Freelance Contract & Invoice Generator</title>
-
-  <!-- Tailwind CSS v3 Play CDN: convenient for a zero-build, single-file demo. -->
+  <title>Invoify - Professional Contract & Invoice Generator</title>
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
-          boxShadow: { glow: '0 0 35px rgba(59,130,246,.15)' }
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
         }
       }
-    };
+    }
   </script>
-
-  <!-- Font Awesome icons -->
+  <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <!-- jsPDF: creates the PDF locally in the browser; no backend/API required. -->
+  <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-  <style>
-    :root { color-scheme: dark; --accent: #3b82f6; }
-    * { box-sizing: border-box; }
-    body { background: #020617; }
-    .field {
-      width: 100%; border: 1px solid #334155; background: #0f172a;
-      color: #e2e8f0; border-radius: 12px; padding: 12px 14px;
-      outline: none; transition: border-color .2s, box-shadow .2s;
-    }
-    .field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-    .field::placeholder { color: #64748b; }
-    .paper { color: #1e293b; background: #fff; }
-    .paper-muted { color: #64748b; }
-    .accent-bg { background: var(--accent); }
-    .accent-text { color: var(--accent); }
-    .accent-border { border-color: var(--accent); }
-    .preview-scroll { scrollbar-width: thin; scrollbar-color: #475569 #0f172a; }
-    @media print {
-      body { background: white !important; }
-      .no-print { display: none !important; }
-      #preview { box-shadow: none !important; margin: 0 !important; }
-    }
-  </style>
 </head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col font-sans">
 
-<body class="min-h-screen font-sans text-slate-100 antialiased">
-  <div class="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
-    <!-- Header -->
-    <header class="mb-7 flex flex-col gap-4 border-b border-slate-800 pb-6 sm:flex-row sm:items-center sm:justify-between">
-      <div class="flex items-center gap-3">
-        <div class="grid h-11 w-11 place-items-center rounded-2xl accent-bg text-white shadow-glow">
-          <i class="fa-solid fa-file-signature text-lg"></i>
+  <!-- Navbar -->
+  <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('generator')">
+        <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-blue-500/30">
+          <i class="fa-solid fa-bolt"></i>
         </div>
         <div>
-          <p class="text-xs font-semibold uppercase tracking-[.22em] text-slate-500">Freelance toolkit</p>
-          <h1 class="text-xl font-bold tracking-tight sm:text-2xl">Contract <span class="text-slate-500">&</span> Invoice Generator</h1>
+          <span class="font-black text-xl tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Invoify</span>
+          <span class="block text-[10px] uppercase font-bold tracking-widest text-slate-400">Ahmad Builds</span>
         </div>
       </div>
 
-      <div class="no-print flex flex-wrap items-center gap-2">
-        <label for="accentPicker" class="mr-1 text-xs text-slate-400">Accent</label>
-        <select id="accentPicker" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 outline-none">
-          <option value="#3b82f6">Blue</option>
-          <option value="#8b5cf6">Violet</option>
-          <option value="#06b6d4">Cyan</option>
-          <option value="#10b981">Emerald</option>
-          <option value="#f59e0b">Amber</option>
-        </select>
-        <button id="resetBtn" class="rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800">
-          <i class="fa-solid fa-rotate-left mr-2"></i>Reset
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+        <button onclick="switchTab('generator')" class="hover:text-blue-600 transition">Generator</button>
+        <button onclick="switchTab('about')" class="hover:text-blue-600 transition">About Us</button>
+        <button onclick="switchTab('privacy')" class="hover:text-blue-600 transition">Privacy Policy</button>
+        <button onclick="switchTab('terms')" class="hover:text-blue-600 transition">Terms of Use</button>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="h-10 w-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:scale-105 transition">
+          <i class="fa-solid fa-moon dark:hidden text-slate-700"></i>
+          <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+        </button>
+        <button onclick="switchTab('generator')" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition">
+          <i class="fa-solid fa-plus"></i> New Doc
         </button>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main class="grid items-start gap-6 xl:grid-cols-[minmax(340px,0.82fr)_minmax(540px,1.18fr)]">
-      <!-- LEFT: INPUT PANEL -->
-      <section class="no-print rounded-3xl border border-slate-800 bg-slate-900/90 p-5 shadow-2xl sm:p-6">
-        <div class="mb-6 flex items-start justify-between gap-3">
-          <div>
-            <h2 class="text-lg font-bold">Document details</h2>
-            <p class="mt-1 text-sm text-slate-400">Enter your project information. Preview updates instantly.</p>
-          </div>
-          <span class="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-xs text-slate-400">Step 1 of 1</span>
-        </div>
+  <!-- Main Container -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Document type selector -->
-        <div class="mb-6">
-          <label for="template" class="mb-2 block text-sm font-semibold text-slate-300">Choose a template</label>
-          <div class="relative">
-            <i class="fa-solid fa-layer-group pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-            <select id="template" class="field appearance-none pl-11 pr-10">
-              <option value="invoice">Invoice Style</option>
-              <option value="contract">Simple Freelance Agreement Contract</option>
-            </select>
-            <i class="fa-solid fa-chevron-down pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500"></i>
-          </div>
-        </div>
-
-        <div class="mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-slate-500">
-          <span class="h-px flex-1 bg-slate-800"></span>People & project<span class="h-px flex-1 bg-slate-800"></span>
+    <!-- GENERATOR VIEW -->
+    <div id="view-generator" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Inputs -->
+      <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-bold">Document Config</h2>
+          <select id="templateType" class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold rounded-lg px-3 py-2 outline-none">
+            <option value="invoice">Invoice Template</option>
+            <option value="contract">Service Agreement</option>
+          </select>
         </div>
 
         <div class="space-y-4">
           <div>
-            <label for="freelancer" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-regular fa-user mr-2 accent-text"></i>Freelancer name</label>
-            <input id="freelancer" class="field" type="text" placeholder="e.g. Alex Morgan" value="Alex Morgan" />
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Freelancer / Your Name</label>
+            <input type="text" id="inpFreelancer" value="Ahmad" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
           </div>
           <div>
-            <label for="client" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-solid fa-building-user mr-2 accent-text"></i>Client name</label>
-            <input id="client" class="field" type="text" placeholder="e.g. Bright Studio" value="Bright Studio" />
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Client Name</label>
+            <input type="text" id="inpClient" value="Global Tech Corp" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
           </div>
           <div>
-            <label for="scope" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-solid fa-list-check mr-2 accent-text"></i>Project scope / description</label>
-            <textarea id="scope" rows="4" class="field resize-y" placeholder="Describe the work, deliverables, and any important details...">Website landing page design and responsive front-end implementation, including one revision round.</textarea>
-            <p class="mt-1.5 text-xs text-slate-500">Keep the description clear so both parties understand the work.</p>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Project Scope & Description</label>
+            <textarea id="inpScope" rows="3" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition">Full-stack web application development and UI/UX optimization.</textarea>
           </div>
-
-          <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="amount" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-solid fa-dollar-sign mr-2 accent-text"></i>Total amount (USD)</label>
-              <div class="relative">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                <input id="amount" class="field pl-8" type="number" min="0" step="0.01" placeholder="500" value="500" />
-              </div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Amount (USD)</label>
+              <input type="number" id="inpAmount" value="750" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
             </div>
             <div>
-              <label for="dueDate" class="mb-2 block text-sm font-medium text-slate-300"><i class="fa-regular fa-calendar mr-2 accent-text"></i>Due date</label>
-              <input id="dueDate" class="field" type="date" />
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Due Date</label>
+              <input type="date" id="inpDate" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
             </div>
           </div>
         </div>
 
-        <div class="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-          <div class="flex gap-3">
-            <i class="fa-solid fa-shield-halved mt-0.5 accent-text"></i>
+        <button id="downloadPdfBtn" class="mt-6 w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 transition">
+          <i class="fa-solid fa-download"></i> Download Official PDF
+        </button>
+      </div>
+
+      <!-- Right Preview -->
+      <div class="lg:col-span-7 bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-center min-h-[600px] shadow-inner">
+        <div id="previewCard" class="bg-white text-slate-900 w-full max-w-xl rounded-2xl shadow-2xl p-8 transition-all">
+          <!-- Dynamic Content Rendered Here -->
+          <div id="previewContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT US VIEW -->
+    <div id="view-about" class="hidden max-w-3xl mx-auto space-y-6">
+      <h1 class="text-3xl font-black">About Invoify</h1>
+      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Invoify is a high-performance, client-side digital utility crafted under Ahmad Builds. Our mission is to provide independent creators, freelancers, and software developers with seamless, privacy-first tools that eliminate administrative overhead without requiring server databases.</p>
+    </div>
+
+    <!-- PRIVACY POLICY VIEW -->
+    <div id="view-privacy" class="hidden max-w-3xl mx-auto space-y-6">
+      <h1 class="text-3xl font-black">Privacy Policy</h1>
+      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Your privacy is our priority. Invoify operates entirely inside your web browser. None of the data, client names, or financial amounts you enter are ever uploaded to any server or saved externally.</p>
+    </div>
+
+    <!-- TERMS OF USE VIEW -->
+    <div id="view-terms" class="hidden max-w-3xl mx-auto space-y-6">
+      <h1 class="text-3xl font-black">Terms of Use</h1>
+      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">By using Invoify, you agree that templates provided are for general administrative guidance and do not constitute formal legal counsel. Always review contracts and invoices with local legal standards before execution.</p>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 py-6 mt-12 text-center text-xs text-slate-500">
+    <p>© 2026 Ahmad Builds. All rights reserved.</p>
+  </footer>
+
+  <!-- Script logic -->
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    function switchTab(tab) {
+      ['generator', 'about', 'privacy', 'terms'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+      });
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+    }
+
+    const fields = ['inpFreelancer', 'inpClient', 'inpScope', 'inpAmount', 'inpDate', 'templateType'];
+    fields.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+
+    function updatePreview() {
+      const f = document.getElementById('inpFreelancer').value || 'Ahmad';
+      const c = document.getElementById('inpClient').value || 'Client';
+      const s = document.getElementById('inpScope').value || '';
+      const amt = document.getElementById('inpAmount').value || '0';
+      const dt = document.getElementById('inpDate').value || '2026-12-31';
+      const type = document.getElementById('templateType').value;
+
+      const container = document.getElementById('previewContent');
+      if (type === 'invoice') {
+        container.innerHTML = `
+          <div class="flex justify-between items-start border-b pb-6 mb-6">
             <div>
-              <p class="text-sm font-semibold text-slate-200">Your data stays in this browser</p>
-              <p class="mt-1 text-xs leading-5 text-slate-500">This demo does not send form details to a server. Review the generated document before sharing or signing it.</p>
+              <span class="text-xs font-bold uppercase tracking-widest text-blue-600">Commercial Invoice</span>
+              <h2 class="text-2xl font-black mt-1">INVOICE</h2>
+            </div>
+            <div class="text-right text-xs text-slate-500">
+              <p><strong>Date:</strong> ${dt}</p>
+              <p><strong>Invoice #:</strong> INV-001</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+            <div><p class="text-xs font-bold text-slate-400">FROM</p><p class="font-bold">${f}</p></div>
+            <div><p class="text-xs font-bold text-slate-400">BILLED TO</p><p class="font-bold">${c}</p></div>
+          </div>
+          <div class="border rounded-xl p-4 mb-6 bg-slate-50 text-sm">
+            <p class="font-semibold">${s}</p>
+          </div>
+          <div class="flex justify-between items-center text-lg font-black border-t pt-4">
+            <span>Total Due:</span>
+            <span class="text-blue-600">$${amt} USD</span>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="border-b pb-4 mb-4">
+            <span class="text-xs font-bold uppercase tracking-widest text-indigo-600">Legal Agreement</span>
+            <h2 class="text-xl font-black mt-1">SERVICE CONTRACT</h2>
+          </div>
+          <div class="space-y-4 text-xs text-slate-700 leading-relaxed">
+            <p>This agreement is made between <strong>${f}</strong> (Provider) and <strong>${c}</strong> (Client).</p>
+            <p><strong>Scope of Work:</strong> ${s}</p>
+            <p><strong>Compensation:</strong> Total project fee is fixed at <strong>$${amt} USD</strong>, payable by ${dt}.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-8 pt-4 border-t text-xs font-bold">
+            <div><p>${f}</p><p class="text-[10px] text-slate-400 font-normal">Provider Signature</p></div>
+            <div><p>${c}</p><p class="text-[10px] text-slate-400 font-normal">Client Signature</p></div>
+          </div>
+        `;
+      }
+    }
+
+    // Default Date set
+    document.getElementById('inpDate').value = new Date().toISOString().split('T')[0];
+    updatePreview();
+  </script>
+</body>
+</html>
